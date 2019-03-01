@@ -19,9 +19,6 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <a class="nav-item nav-link active" href="current.php">Aktuell im Kino</a>
-            <a class="nav-item nav-link" href="soon.php">Demnächst im Kino</a>
-            <a class="nav-item nav-link" href="reservation.php">Reservation</a>
-            <a class="nav-item nav-link" href="info.php">Kinoinfos</a>
         </div>
     </div>
 </nav>
@@ -31,13 +28,8 @@
         <?php
         require 'Movie.php';
         const APIKEY = "";
-        $movies = array();
-        $movieTitles = ['Harry Potter', 'Hunger games', 'Thor', 'Spider-man', 'Transformers', 'It', 'The matrix', 'Finding nemo', 'Toy story'];
-        foreach ($movieTitles as $movieTitle) {
-            $movie = file_get_contents("http://www.omdbapi.com/?t=" . urlencode($movieTitle) . "&plot=full&apikey=" . APIKEY);
-            $movie = json_decode($movie, true);
-            $movies[] = new Movie($movie['Title'], $movie['Year'], $movie['Released'], $movie['Runtime'], $movie['Genre'], $movie['Director'], $movie['Actors'], $movie['Plot'], $movie['Language'], $movie['Country']);
-        }
+
+        list($movies, $movieTitles) = Movie::getMovies(['Harry Potter', 'Hunger games', 'Thor', 'Spider-man', 'Transformers', 'It', 'The matrix', 'Finding nemo', 'Toy story']);
 
         for ($i = 0; $i < count($movies); $i++) {
             if ($i % 3 == 0) {
@@ -48,12 +40,12 @@
                     <img src=\"media/" . $movieTitles[$i] . ".jpg" . "\" class=\"card-img-top\" alt=\"...\">
                     <div class='card-img-overlay ovl'>
                     <div class=\"card-body\">
-                        <h5 class=\"card-title\">" . $movies[$i]->getTitle() . "</h5>
-                       <p class='card-text'>Veröffentlichung<br>" . $movies[$i]->getReleased() . "</p>
-                       <p class='card-text'>Dauer<br>" . $movies[$i]->getRuntime() . "</p>
-                       <p class='card-text'>Genre<br>" . $movies[$i]->getGenre() . "</p>
-                       <p class='card-text'>Regisseur<br>" . $movies[$i]->getDirector() . "</p>
-                       <p class='card-text'>Schauspieler<br>" . $movies[$i]->getActors() . "</p>
+                        <h5 class=\"card-title scaleTitle\">" . $movies[$i]->getTitle() . "</h5>
+                       <p class='card-text font-weight-bold mb-0 scale'>Veröffentlichung</p><p class='scale'>" . $movies[$i]->getReleased() . "</p>
+                       <p class='card-text font-weight-bold mb-0 scale'>Dauer</p><p class='scale'>" . $movies[$i]->getRuntime() . "</p>
+                       <p class='card-text font-weight-bold mb-0 scale'>Genre</p><p class='scale'>" . $movies[$i]->getGenre() . "</p>
+                       <p class='card-text font-weight-bold mb-0 scale'>Regisseur</p><p class='scale'>" . $movies[$i]->getDirector() . "</p>
+                       <p class='card-text font-weight-bold mb-0 scale'>Schauspieler</p><p class='scale'>" . $movies[$i]->getActors() . "</p>
                     </div>
                     </div>
                 </div>";

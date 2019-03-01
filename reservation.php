@@ -17,9 +17,6 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <a class="nav-item nav-link" href="current.php">Aktuell im Kino</a>
-            <a class="nav-item nav-link" href="soon.php">Demnächst im Kino</a>
-            <a class="nav-item nav-link active" href="reservation.php">Reservation</a>
-            <a class="nav-item nav-link" href="info.php">Kinoinfos</a>
         </div>
     </div>
 </nav>

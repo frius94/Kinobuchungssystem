@@ -15,9 +15,6 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <a class="nav-item nav-link" href="current.php">Aktuell im Kino</a>
-            <a class="nav-item nav-link" href="soon.php">Demnächst im Kino</a>
-            <a class="nav-item nav-link" href="reservation.php">Reservation</a>
-            <a class="nav-item nav-link" href="info.php">Kinoinfos</a>
         </div>
     </div>
 </nav>
@@ -35,7 +32,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <div id="carouselExampleIndicators" class="carousel slide mb-5" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>

@@ -2,13 +2,51 @@
     opacity: 0;
     transition: 0.5s;
 }
+
 body {
     background-image: url("../media/adsf.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     /*background-attachment: fixed;*/
 }
+
 .ovl:hover {
     opacity: 1;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/*
+ Medium devices (tablets, 768px and up)
+ */
+@media (min-width: 768px) {
+    .scale {
+        font-size: 0.5rem;
+    }
+    .scaleTitle {
+        font-size: 0.7rem;
+    }
+}
+
+/*
+ Large devices (desktops, 992px and up)
+ */
+@media (min-width: 992px) {
+    .scale {
+        font-size: 0.9rem;
+    }
+    .scaleTitle {
+        font-size: 1.1rem;
+    }
+}
+
+/*
+ Extra large devices (large desktops, 1200px and up)
+ */
+@media (min-width: 1200px) {
+    .scale {
+        font-size: 1rem;
+    }
+    .scaleTitle {
+        font-size: 1.25rem;
+    }
 }

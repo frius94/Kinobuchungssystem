@@ -18,6 +18,7 @@ class Movie
     private $plot;
     private $language;
     private $country;
+    private $price;
 
     /**
      * Film constructor.
@@ -32,7 +33,7 @@ class Movie
      * @param $language
      * @param $country
      */
-    public function __construct($title, $year, $released, $runtime, $genre, $director, $actors, $plot, $language, $country)
+    public function __construct($title, $year, $released, $runtime, $genre, $director, $actors, $plot, $language, $country, $price)
     {
         $this->title = $title;
         $this->year = $year;
@@ -44,6 +45,7 @@ class Movie
         $this->plot = $plot;
         $this->language = $language;
         $this->country = $country;
+        $this->price = $price;
     }
 
     /**
@@ -226,5 +228,37 @@ class Movie
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param mixed $price
+     * @return Movie
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+        return $this;
+    }
+
+    /**
+     * @param $movieTitles
+     * @return array
+     */
+    static function getMovies($movieTitles): array
+    {
+        $movies = array();
+        foreach ($movieTitles as $movieTitle) {
+            $movie = file_get_contents("http://www.omdbapi.com/?t=" . urlencode($movieTitle) . "&plot=full&apikey=" . APIKEY);
+            $movie = json_decode($movie, true);
+            $movies[] = new Movie($movie['Title'], $movie['Year'], $movie['Released'], $movie['Runtime'], $movie['Genre'], $movie['Director'], $movie['Actors'], $movie['Plot'], $movie['Language'], $movie['Country'], 0);
+        }
+        return array($movies, $movieTitles);
+    }
 }
 

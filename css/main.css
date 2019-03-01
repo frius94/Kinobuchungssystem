@@ -1,0 +1,14 @@
+.ovl {
+    opacity: 0;
+    transition: 0.5s;
+}
+body {
+    background-image: url("../media/adsf.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    /*background-attachment: fixed;*/
+}
+.ovl:hover {
+    opacity: 1;
+    background: rgba(0,0,0,0.8);
+}

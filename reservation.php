@@ -54,6 +54,9 @@
                     <input type="text" class="form-control" id="movie" placeholder="Film" value="<?=$_GET['name']?>" required disabled>
                 </div>
                 <div class="form-group">
+                    <input type="text" class="form-control" id="room" placeholder="Raum" value="Raum: <?=$_GET['room']?>" required disabled>
+                </div>
+                <div class="form-group">
                     <input type="text" class="form-control" id="seats" placeholder="ausgewählte Sitze" required
                            disabled>
                 </div>

@@ -27,16 +27,31 @@
     <div class="col">
         <?php
         require 'Movie.php';
-        const APIKEY = "";
+        $dbdata = json_decode(file_get_contents("dbdata.json"), true);
 
+        define("APIKEY", file_get_contents("apikey.txt"));
+        define("HOST", $dbdata['host']);
+        define("USERNAME", $dbdata['username']);
+        define("PASSWORD", $dbdata['pw']);
+        define("DBNAME", $dbdata['dbname']);
+
+        //        $mysqli = new mysqli(HOST, USERNAME, PASSWORD, DBNAME);
+        //        if ($mysqli->connect_error) {
+        //            die("Connection failed: " . $mysqli->connect_error);
+        //        }
         list($movies, $movieTitles) = Movie::getMovies(['Harry Potter', 'Hunger games', 'Thor', 'Spider-man', 'Transformers', 'It', 'The matrix', 'Finding nemo', 'Toy story']);
 
         for ($i = 0; $i < count($movies); $i++) {
+
+//            $sql = "INSERT INTO `movie` VALUES ('" . $movies[$i]->getTitle() . "', " . $movies[$i]->getYear() . ", ". $movies[$i]->getReleased .", '". $movies[$i]->getRuntime() ."', '".$movies[$i]->getGenre()."', '". addslashes($movies[$i]->getPlot())."', '".$movies[$i]->getLanguage()."', ".$movies[$i]->getPrice().")";
+//            $mysqli->query($sql);
+//            $mysqli->close();
+
             if ($i % 3 == 0) {
                 echo "<div class=\"row\">
             <div class=\"card-deck mb-5\">";
             }
-            echo "<div class=\"card text-white\" id='$movieTitles[$i]' onclick='reserve(this)'>
+            echo "<div class=\"card text-white\" id='$movieTitles[$i]' onclick='showRooms(this)' onmouseleave='showInfo(this)'>
                     <img src=\"media/" . $movieTitles[$i] . ".jpg" . "\" class=\"card-img-top\" alt=\"...\">
                     <div class='card-img-overlay ovl'>
                     <div class=\"card-body\">
@@ -47,6 +62,19 @@
                        <p class='card-text font-weight-bold mb-0 scale'>Regisseur</p><p class='scale'>" . $movies[$i]->getDirector() . "</p>
                        <p class='card-text font-weight-bold mb-0 scale'>Schauspieler</p><p class='scale'>" . $movies[$i]->getActors() . "</p>
                     </div>
+                    
+                    <div class=\"list-group d-none\">
+                        <h5 class='card-title scaleTitle'>Wählen Sie einen Raum aus.</h5>
+                        <a href=\"http://localhost/reservation.php?name=".urlencode($movieTitles[$i])."&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 1  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
+                            <span class=\"badge badge-primary badge-pill float-right\">10</span></a>
+                        <a href=\"http://localhost/reservation.php?name=".urlencode($movieTitles[$i])."&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 2  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
+                            <span class=\"badge badge-primary badge-pill\">12</span></a></a>
+                        <a href=\"http://localhost/reservation.php?name=".urlencode($movieTitles[$i])."&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 3  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
+                            <span class=\"badge badge-primary badge-pill\">3</span></a></a>
+                        <a href=\"http://localhost/reservation.php?name=".urlencode($movieTitles[$i])."&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 4  <p class='d-inline ml-5'>verfügbare Plätze:</p>  
+                            <span class=\"badge badge-primary badge-pill\">6</span></a></a>
+                    </div>
+                    
                     </div>
                 </div>";
             if (($i + 1) % 3 == 0) {
@@ -59,7 +87,19 @@
 </div>
 </body>
 <script>
+    function showRooms(movie) {
+        $(movie).find(".card-body").addClass("d-none");
+        $(movie).find(".list-group").removeClass("d-none");
+    }
+
+    function showInfo(movie) {
+        $(movie).find(".list-group").addClass("d-none");
+        $(movie).find(".card-body").removeClass("d-none");
+    }
+
     function reserve(movie) {
+        // $(".card-body").addClass("d-none");
+        // $(".list-group").removeClass("d-none");
         window.open("http://localhost/reservation.php?name=" + encodeURI($(movie).attr('id')), "_self");
     }
 </script>

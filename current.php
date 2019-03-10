@@ -35,17 +35,15 @@
         define("PASSWORD", $dbdata['pw']);
         define("DBNAME", $dbdata['dbname']);
 
-        //        $mysqli = new mysqli(HOST, USERNAME, PASSWORD, DBNAME);
-        //        if ($mysqli->connect_error) {
-        //            die("Connection failed: " . $mysqli->connect_error);
-        //        }
+        $mysqli = new mysqli("127.0.0.1", "root", "2851", "danie298_kinobuchung");
+        if ($mysqli->connect_error) {
+            die("Connection failed: " . $mysqli->connect_error);
+        }
         list($movies, $movieTitles) = Movie::getMovies(['Harry Potter', 'Hunger games', 'Thor', 'Spider-man', 'Transformers', 'It', 'The matrix', 'Finding nemo', 'Toy story']);
-
         for ($i = 0; $i < count($movies); $i++) {
-
-//            $sql = "INSERT INTO `movie` VALUES ('" . $movies[$i]->getTitle() . "', " . $movies[$i]->getYear() . ", ". $movies[$i]->getReleased .", '". $movies[$i]->getRuntime() ."', '".$movies[$i]->getGenre()."', '". addslashes($movies[$i]->getPlot())."', '".$movies[$i]->getLanguage()."', ".$movies[$i]->getPrice().")";
-//            $mysqli->query($sql);
-//            $mysqli->close();
+            $dateTime = DateTime::createFromFormat("d M Y", $movies[$i]->getReleased());
+            $sql = "INSERT IGNORE INTO `movie` (title, year, released, runtime, genre, plot, language) VALUES ('". $movies[$i]->getTitle() . "', " . $movies[$i]->getYear().", '" . $dateTime->format('Y-m-d') . "', '". $movies[$i]->getRuntime()."', '".$movies[$i]->getGenre()."', '" . addslashes($movies[$i]->getPlot())."', '" . $movies[$i]->getLanguage()."')";
+            $mysqli->query($sql);
 
             if ($i % 3 == 0) {
                 echo "<div class=\"row\">
@@ -65,13 +63,13 @@
                     
                     <div class=\"list-group d-none\">
                         <h5 class='card-title scaleTitle'>Wählen Sie einen Raum aus.</h5>
-                        <a href=\"http://localhost/reservation.php?name=".urlencode($movieTitles[$i])."&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 1  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
+                        <a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 1  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
                             <span class=\"badge badge-primary badge-pill float-right\">10</span></a>
-                        <a href=\"http://localhost/reservation.php?name=".urlencode($movieTitles[$i])."&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 2  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
+                        <a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 2  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
                             <span class=\"badge badge-primary badge-pill\">12</span></a></a>
-                        <a href=\"http://localhost/reservation.php?name=".urlencode($movieTitles[$i])."&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 3  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
+                        <a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 3  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
                             <span class=\"badge badge-primary badge-pill\">3</span></a></a>
-                        <a href=\"http://localhost/reservation.php?name=".urlencode($movieTitles[$i])."&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 4  <p class='d-inline ml-5'>verfügbare Plätze:</p>  
+                        <a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 4  <p class='d-inline ml-5'>verfügbare Plätze:</p>  
                             <span class=\"badge badge-primary badge-pill\">6</span></a></a>
                     </div>
                     
@@ -82,6 +80,8 @@
         </div>";
             }
         }
+        $mysqli->close();
+
         ?>
     </div>
 </div>

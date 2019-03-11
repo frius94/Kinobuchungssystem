@@ -25,41 +25,45 @@
     <div class="row">
         <div class="col-4 ml-1">
             <h5 class="mb-4">Bitte wählen Sie Ihre Sitze aus und geben Ihre Daten ein.</h5>
-            <form class="mr-auto">
+            <form class="mr-auto" accept-charset="UTF-8" method="POST" action="makeReservation.php">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="firstname" placeholder="Vorname" required>
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Vorname" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="lastname" placeholder="Nachname" required>
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Nachname" required>
                 </div>
                 <div class="form-row">
                     <div class="col-9">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="street" placeholder="Strasse" required>
+                            <input type="text" class="form-control" id="street" name="street" placeholder="Strasse" required>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <input type="number" class="form-control" id="street" placeholder="Nr." required>
+                            <input type="number" class="form-control" id="number" name="number" placeholder="Nr." required>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" id="email" placeholder="E-Mail" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="E-Mail" required>
                 </div>
                 <div class="form-group">
-                    <input type="tel" class="form-control" id="mobile" placeholder="Telefon" required>
+                    <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Telefon" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="movie" placeholder="Film" value="<?=$_GET['name']?>" required disabled>
+                    <input type="text" class="form-control" id="movie" name="movie" placeholder="Film" value="<?= $_GET['name'] ?>"
+                           required disabled>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="room" placeholder="Raum" value="Raum: <?=$_GET['room']?>" required disabled>
+                    <input type="text" class="form-control" id="room" name="room" placeholder="Raum"
+                           value="Raum: <?= $_GET['room'] ?>" required disabled>
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control" id="seats" placeholder="ausgewählte Sitze" required
                            disabled>
                 </div>
+                <input type="hidden" name="showid" value="<?= $_GET['showid']?>">
+                <input type="hidden" name="seats" id="hiddenSeats" value="">
                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Sitze reservieren</button>
             </form>
         </div>
@@ -74,16 +78,34 @@
                 </thead>
                 <tbody>
                 <?php
-                $row = 1;
+
+                $mysqli = new mysqli("127.0.0.1", "root", "2851", "danie298_kinobuchung");
+                if ($mysqli->connect_error) {
+                    die("Connection failed: " . $mysqli->connect_error);
+                }
+
+                $countSeatsQuery = "SELECT count(seat.idseat) FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom WHERE room.idroom = " . $_GET['room'] . ";";
+                $countSeats = $mysqli->query($countSeatsQuery);
+                $countSeats = $countSeats->fetch_array();
+                $countSeats = $countSeats[0];
+
                 foreach (range('A', 'F') as $c) {
                     echo "<tr>
         <th class='align-middle'>$c</th>";
-                    for ($i = 1; $i <= 10; $i++) {
-                        $id = $c . $i;
-                        echo "<td><a href='#'><img id='$id' src='media/seatBlack.png' class='img-fluid' onclick='fillSeat(this)'></a>" . $i . "</td>";
+                    for ($seatNumber = 1; $seatNumber <= 10; $seatNumber++) {
+                        $seatOccupiedQuery = "SELECT seat.occupied FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom INNER JOIN danie298_kinobuchung.show ON show.room_idroom = room.idroom WHERE danie298_kinobuchung.show.idshow = " . $_GET['showid'] . " AND danie298_kinobuchung.row.row_letter = '" . $c . "' AND seat.seatnumber = " . $seatNumber . ";";
+                        $occupied = $mysqli->query($seatOccupiedQuery);
+                        $occupied = $occupied->fetch_array();
+                        $id = $c . $seatNumber;
+                        if ($occupied['occupied']) {
+                            echo "<td><a href='#'><img id='$id' src='media/seatGray.png' class='img-fluid' alt='seat' onclick='fillSeat(this)'></a>" . $seatNumber . "</td>";
+                        } else {
+                            echo "<td><a href='#'><img id='$id' src='media/seatBlack.png' class='img-fluid' alt='seat' onclick='fillSeat(this)'></a>" . $seatNumber . "</td>";
+                        }
                     }
                     echo "</tr>";
                 }
+                $mysqli->close();
                 ?>
                 </tbody>
             </table>
@@ -108,10 +130,12 @@
             $(seat).attr('src', "media/seatRed.png");
             selectedSeats.push($(seat).attr('id'));
             $('#seats').attr('value', selectedSeats.toString());
-        } else {
+            $('#hiddenSeats').attr('value', selectedSeats.toString());
+        } else if ($(seat).attr('src') === "media/seatRed.png") {
             $(seat).attr('src', "media/seatBlack.png");
             selectedSeats.splice(selectedSeats.indexOf($(seat).attr('id')), 1);
             $('#seats').attr('value', selectedSeats.toString());
+            $('#hiddenSeats').attr('value', selectedSeats.toString());
         }
     }
 </script>

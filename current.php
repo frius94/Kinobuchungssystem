@@ -27,6 +27,7 @@
     <div class="col">
         <?php
         require 'Movie.php';
+        require 'queryMethods.php';
         $dbdata = json_decode(file_get_contents("dbdata.json"), true);
 
         define("APIKEY", file_get_contents("apikey.txt"));
@@ -42,7 +43,7 @@
         list($movies, $movieTitles) = Movie::getMovies(['Harry Potter', 'Hunger games', 'Thor', 'Spider-man', 'Transformers', 'It', 'The matrix', 'Finding nemo', 'Toy story']);
         for ($i = 0; $i < count($movies); $i++) {
             $dateTime = DateTime::createFromFormat("d M Y", $movies[$i]->getReleased());
-            $sql = "INSERT IGNORE INTO `movie` (title, year, released, runtime, genre, plot, language) VALUES ('". $movies[$i]->getTitle() . "', " . $movies[$i]->getYear().", '" . $dateTime->format('Y-m-d') . "', '". $movies[$i]->getRuntime()."', '".$movies[$i]->getGenre()."', '" . addslashes($movies[$i]->getPlot())."', '" . $movies[$i]->getLanguage()."')";
+            $sql = "INSERT IGNORE INTO `movie` (title, year, released, runtime, genre, plot, language) VALUES ('" . $movies[$i]->getTitle() . "', " . $movies[$i]->getYear() . ", '" . $dateTime->format('Y-m-d') . "', '" . $movies[$i]->getRuntime() . "', '" . $movies[$i]->getGenre() . "', '" . addslashes($movies[$i]->getPlot()) . "', '" . $movies[$i]->getLanguage() . "')";
             $mysqli->query($sql);
 
             if ($i % 3 == 0) {
@@ -62,17 +63,34 @@
                     </div>
                     
                     <div class=\"list-group d-none\">
-                        <h5 class='card-title scaleTitle'>Wählen Sie einen Raum aus.</h5>
-                        <a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 1  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
-                            <span class=\"badge badge-primary badge-pill float-right\">10</span></a>
-                        <a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 2  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
-                            <span class=\"badge badge-primary badge-pill\">12</span></a></a>
-                        <a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 3  <p class='d-inline ml-5'>verfügbare Plätze:</p> 
-                            <span class=\"badge badge-primary badge-pill\">3</span></a></a>
-                        <a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=1\" class=\"list-group-item list-group-item-action list-group-item-secondary\">Raum 4  <p class='d-inline ml-5'>verfügbare Plätze:</p>  
-                            <span class=\"badge badge-primary badge-pill\">6</span></a></a>
+                        <h5 class='card-title scaleTitle'>Wählen Sie eine Vorstellung aus.</h5>";
+
+            $showQuery = "SELECT * FROM danie298_kinobuchung.show INNER JOIN danie298_kinobuchung.movie ON danie298_kinobuchung.show.movie_idmovie = movie.idmovie WHERE movie.title = '" . $movies[$i]->getTitle() . "' ORDER BY room_idroom;";
+            if ($shows = $mysqli->query($showQuery)) {
+
+                /* fetch associative array */
+                while ($row = $shows->fetch_assoc()) {
+
+                    $availableSeatsQuery = "SELECT count(seat.occupied) FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom INNER JOIN danie298_kinobuchung.show ON show.room_idroom = room.idroom WHERE danie298_kinobuchung.seat.occupied = 0 AND show.idshow = " . $row['idshow'] . ";";
+                    $availableSeats = $mysqli->query($availableSeatsQuery);
+                    $availableSeats = $availableSeats->fetch_assoc();
+                    $availableSeats = ($availableSeats['count(seat.occupied)']);
+                    try {
+                        $dateTime = new DateTime($row['time']);
+                    } catch (Exception $e) {
+                    }
+
+                    echo "<a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=" . $row['room_idroom'] . "&showid=" . $row['idshow'] . "\" class=\"list-group-item list-group-item-action list-group-item-secondary\">
+                    Raum <span class=\"badge badge-primary badge-pill float-right\">" . $row['room_idroom'] . "</span><br>
+                    Datum & Zeit <span class=\"badge badge-primary badge-pill float-right\">" . $dateTime->format('d.m.Y H:i') . "</span><br>
+                    verfügbare Plätze<span class=\"badge badge-primary badge-pill float-right\">$availableSeats</span></a>";
+                }
+                /* free result set */
+                $shows->free();
+            }
+
+            echo "
                     </div>
-                    
                     </div>
                 </div>";
             if (($i + 1) % 3 == 0) {
@@ -80,8 +98,10 @@
         </div>";
             }
         }
+        createRooms($mysqli);
+        createRows($mysqli);
+        createSeats($mysqli);
         $mysqli->close();
-
         ?>
     </div>
 </div>

@@ -27,20 +27,24 @@
             <h5 class="mb-4">Bitte wählen Sie Ihre Sitze aus und geben Ihre Daten ein.</h5>
             <form class="mr-auto" accept-charset="UTF-8" method="POST" action="makeReservation.php">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Vorname" required>
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Vorname"
+                           required>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Nachname" required>
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Nachname"
+                           required>
                 </div>
                 <div class="form-row">
                     <div class="col-9">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="street" name="street" placeholder="Strasse" required>
+                            <input type="text" class="form-control" id="street" name="street" placeholder="Strasse"
+                                   required>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <input type="number" class="form-control" id="number" name="number" placeholder="Nr." required>
+                            <input type="number" class="form-control" id="number" name="number" placeholder="Nr."
+                                   required>
                         </div>
                     </div>
                 </div>
@@ -51,7 +55,8 @@
                     <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Telefon" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="movie" name="movie" placeholder="Film" value="<?= $_GET['name'] ?>"
+                    <input type="text" class="form-control" id="movie" name="movie" placeholder="Film"
+                           value="<?= $_GET['name'] ?>"
                            required disabled>
                 </div>
                 <div class="form-group">
@@ -62,7 +67,7 @@
                     <input type="text" class="form-control" id="seats" placeholder="ausgewählte Sitze" required
                            disabled>
                 </div>
-                <input type="hidden" name="showid" value="<?= $_GET['showid']?>">
+                <input type="hidden" name="showid" value="<?= $_GET['showid'] ?>">
                 <input type="hidden" name="seats" id="hiddenSeats" value="">
                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Sitze reservieren</button>
             </form>
@@ -79,15 +84,11 @@
                 <tbody>
                 <?php
 
-                $mysqli = new mysqli("127.0.0.1", "root", "2851", "danie298_kinobuchung");
-                if ($mysqli->connect_error) {
-                    die("Connection failed: " . $mysqli->connect_error);
-                }
+                $mysqli = connectDB();
 
                 $countSeatsQuery = "SELECT count(seat.idseat) FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom WHERE room.idroom = " . $_GET['room'] . ";";
                 $countSeats = $mysqli->query($countSeatsQuery);
-                $countSeats = $countSeats->fetch_array();
-                $countSeats = $countSeats[0];
+                $countSeats = $countSeats->fetch_array()[0];
 
                 foreach (range('A', 'F') as $c) {
                     echo "<tr>

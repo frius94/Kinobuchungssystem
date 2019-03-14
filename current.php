@@ -28,6 +28,8 @@
         <?php
         require 'Movie.php';
         require 'queryMethods.php';
+        require 'makeReservation.php';
+
         $dbdata = json_decode(file_get_contents("dbdata.json"), true);
 
         define("APIKEY", file_get_contents("apikey.txt"));
@@ -36,11 +38,10 @@
         define("PASSWORD", $dbdata['pw']);
         define("DBNAME", $dbdata['dbname']);
 
-        $mysqli = new mysqli("127.0.0.1", "root", "2851", "danie298_kinobuchung");
-        if ($mysqli->connect_error) {
-            die("Connection failed: " . $mysqli->connect_error);
-        }
+        $mysqli = connectDB();
+
         list($movies, $movieTitles) = Movie::getMovies(['Harry Potter', 'Hunger games', 'Thor', 'Spider-man', 'Transformers', 'It', 'The matrix', 'Finding nemo', 'Toy story']);
+
         for ($i = 0; $i < count($movies); $i++) {
             $dateTime = DateTime::createFromFormat("d M Y", $movies[$i]->getReleased());
             $sql = "INSERT IGNORE INTO `movie` (title, year, released, runtime, genre, plot, language) VALUES ('" . $movies[$i]->getTitle() . "', " . $movies[$i]->getYear() . ", '" . $dateTime->format('Y-m-d') . "', '" . $movies[$i]->getRuntime() . "', '" . $movies[$i]->getGenre() . "', '" . addslashes($movies[$i]->getPlot()) . "', '" . $movies[$i]->getLanguage() . "')";
@@ -115,12 +116,6 @@
     function showInfo(movie) {
         $(movie).find(".list-group").addClass("d-none");
         $(movie).find(".card-body").removeClass("d-none");
-    }
-
-    function reserve(movie) {
-        // $(".card-body").addClass("d-none");
-        // $(".list-group").removeClass("d-none");
-        window.open("http://localhost/reservation.php?name=" + encodeURI($(movie).attr('id')), "_self");
     }
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

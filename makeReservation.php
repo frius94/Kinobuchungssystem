@@ -90,12 +90,13 @@ function insertReservation(mysqli $mysqli, $showId, $personId)
 /**
  * @param mysqli $mysqli
  * @param $seatsArray
+ * @param $showId
  * @return bool|mysqli_result
  */
-function updateSeatOccupation(mysqli $mysqli, $seatsArray)
+function updateSeatOccupation(mysqli $mysqli, $seatsArray, $showId)
 {
     $row = substr($seatsArray, 0, 1);
     $seat = substr($seatsArray, 1, 1);
-    $insertSeatOccupationQuery = "UPDATE seat INNER JOIN danie298_kinobuchung.row AS r ON r.idrow = seat.row_idrow INNER JOIN room ON room.idroom = r.room_idroom INNER JOIN danie298_kinobuchung.show AS s ON s.room_idroom = room.idroom SET occupied = 1 WHERE s.idshow = 1 && r.row_letter = '$row' && seat.seatnumber = $seat;";
+    $insertSeatOccupationQuery = "UPDATE seat INNER JOIN danie298_kinobuchung.row AS r ON r.idrow = seat.row_idrow INNER JOIN room ON room.idroom = r.room_idroom INNER JOIN danie298_kinobuchung.show AS s ON s.room_idroom = room.idroom SET occupied = 1 WHERE s.idshow = $showId && r.row_letter = '$row' && seat.seatnumber = $seat;";
     return $mysqli->query($insertSeatOccupationQuery);
 }

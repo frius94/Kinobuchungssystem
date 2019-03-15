@@ -253,8 +253,9 @@ class Movie
     static function getMovies($movieTitles): array
     {
         $movies = array();
+        $apikey = file_get_contents("apikey.txt");
         foreach ($movieTitles as $movieTitle) {
-            $movie = file_get_contents("http://www.omdbapi.com/?t=" . urlencode($movieTitle) . "&plot=full&apikey=" . APIKEY);
+            $movie = file_get_contents("http://www.omdbapi.com/?t=" . urlencode($movieTitle) . "&plot=full&apikey=" . $apikey);
             $movie = json_decode($movie, true);
             $movies[] = new Movie($movie['Title'], $movie['Year'], $movie['Released'], $movie['Runtime'], $movie['Genre'], $movie['Director'], $movie['Actors'], $movie['Plot'], $movie['Language'], $movie['Country'], 0);
         }

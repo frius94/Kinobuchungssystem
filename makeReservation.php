@@ -28,7 +28,7 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
         $personID = getPersonID($mysqli, $firstname, $lastname, $mobile);
         if (insertReservation($mysqli, $showId, $personID)) {
             foreach ($seatsArray as $item) {
-                updateSeatOccupation($mysqli, $item);
+                updateSeatOccupation($mysqli, $item, $showId);
             }
         }
     }

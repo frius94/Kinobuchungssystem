@@ -6,7 +6,7 @@
  * Time: 01:13
  */
 
-
+require 'queryMethods.php';
 if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['street']) && isset($_POST['number']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) && isset($_POST['email']) && isset($_POST['mobile']) && isset($_POST['seats']) && isset($_POST['showid'])) {
 
     $firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
@@ -20,26 +20,29 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
     $seats = filter_var($_POST['seats'], FILTER_SANITIZE_STRING);
     $showId = filter_var($_POST['showid'], FILTER_SANITIZE_STRING);
 
-    $row = substr($seats, 0, 1);
-    $seat = substr($seats, 1, 1);
+    $seatsArray = explode(",", $seats);
 
     $mysqli = connectDB();
 
     if (insertPerson($mysqli, $firstname, $lastname, $street, $number, $email, $mobile)) {
         $personID = getPersonID($mysqli, $firstname, $lastname, $mobile);
         if (insertReservation($mysqli, $showId, $personID)) {
-            updateSeatOccupation($mysqli, $row, $seat);
+            foreach ($seatsArray as $item) {
+                updateSeatOccupation($mysqli, $item);
+            }
         }
     }
     $mysqli->close();
 
-    mail($email, "Ihre Kinoreservierung", "Danke für Ihre Kinoreservierung.\n");
+//    mail($email, "Ihre Kinoreservierung", "Danke für Ihre Kinoreservierung.\n");
 
-    echo "<script>alert('Danke für Ihre Registrierung. Sie war erfolgreich.')</script>";
-    header("Location: https://localhost/index.php");
+    echo "<script>alert('Danke für Ihre Registrierung. Sie war erfolgreich.');
+                  window.location.href = 'http://localhost/index.php';
+          </script>";
 } else {
-    echo "<script>alert('Leider ist bei der Registrierung ein Fehler aufgetreten.')</script>";
-    header("Location: https://localhost/index.php");
+    echo "<script>alert('Leider ist bei der Registrierung ein Fehler aufgetreten.');
+                  window.location.href = 'http://localhost/index.php';
+          </script>";
 }
 
 /**
@@ -86,24 +89,13 @@ function insertReservation(mysqli $mysqli, $showId, $personId)
 
 /**
  * @param mysqli $mysqli
- * @param $row
- * @param $seat
+ * @param $seatsArray
  * @return bool|mysqli_result
  */
-function updateSeatOccupation(mysqli $mysqli, $row, $seat)
+function updateSeatOccupation(mysqli $mysqli, $seatsArray)
 {
+    $row = substr($seatsArray, 0, 1);
+    $seat = substr($seatsArray, 1, 1);
     $insertSeatOccupationQuery = "UPDATE seat INNER JOIN danie298_kinobuchung.row AS r ON r.idrow = seat.row_idrow INNER JOIN room ON room.idroom = r.room_idroom INNER JOIN danie298_kinobuchung.show AS s ON s.room_idroom = room.idroom SET occupied = 1 WHERE s.idshow = 1 && r.row_letter = '$row' && seat.seatnumber = $seat;";
     return $mysqli->query($insertSeatOccupationQuery);
-}
-
-/**
- * @return mysqli
- */
-function connectDB()
-{
-    $mysqli = new mysqli("127.0.0.1", "root", "2851", "danie298_kinobuchung");
-    if ($mysqli->connect_error) {
-        die("Es konnte keine Verbindung zur Datenbank hergestellt werden. Bitte kontaktieren Sie unseren Support unter +41786041237\n" . $mysqli->connect_error);
-    }
-    return $mysqli;
 }

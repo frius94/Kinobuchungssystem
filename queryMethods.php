@@ -49,3 +49,15 @@ function createSeats(mysqli $mysqli)
         }
     }
 }
+
+/**
+ * @return mysqli
+ */
+function connectDB()
+{
+    $mysqli = new mysqli("127.0.0.1", "root", "2851", "danie298_kinobuchung");
+    if ($mysqli->connect_error) {
+        die("Es konnte keine Verbindung zur Datenbank hergestellt werden. Bitte kontaktieren Sie unseren Support unter +41786041237\n" . $mysqli->connect_error);
+    }
+    return $mysqli;
+}

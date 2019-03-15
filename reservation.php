@@ -16,7 +16,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" href="current.php">Aktuell im Kino</a>
+            <a class="nav-item nav-link" href="currentMovies.php">Aktuell im Kino</a>
         </div>
     </div>
 </nav>
@@ -83,7 +83,7 @@
                 </thead>
                 <tbody>
                 <?php
-
+                require 'queryMethods.php';
                 $mysqli = connectDB();
 
                 $countSeatsQuery = "SELECT count(seat.idseat) FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom WHERE room.idroom = " . $_GET['room'] . ";";

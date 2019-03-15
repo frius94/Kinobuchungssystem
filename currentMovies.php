@@ -18,7 +18,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="current.php">Aktuell im Kino</a>
+            <a class="nav-item nav-link active" href="currentMovies.php">Aktuell im Kino</a>
         </div>
     </div>
 </nav>
@@ -28,7 +28,6 @@
         <?php
         require 'Movie.php';
         require 'queryMethods.php';
-        require 'makeReservation.php';
 
         $dbdata = json_decode(file_get_contents("dbdata.json"), true);
 

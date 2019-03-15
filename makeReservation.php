@@ -37,11 +37,11 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
 //    mail($email, "Ihre Kinoreservierung", "Danke für Ihre Kinoreservierung.\n");
 
     echo "<script>alert('Danke für Ihre Registrierung. Sie war erfolgreich.');
-                  window.location.href = 'http://localhost/index.php';
+                  window.location.href = 'https://kinobuchung.ch/index.php';
           </script>";
 } else {
     echo "<script>alert('Leider ist bei der Registrierung ein Fehler aufgetreten.');
-                  window.location.href = 'http://localhost/index.php';
+                  window.location.href = 'http://kinobuchung.ch/index.php';
           </script>";
 }
 

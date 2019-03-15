@@ -72,7 +72,7 @@
                     } catch (Exception $e) {
                     }
 
-                    echo "<a href=\"http://localhost/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=" . $row['room_idroom'] . "&showid=" . $row['idshow'] . "\" class=\"list-group-item list-group-item-action list-group-item-secondary\">
+                    echo "<a href=\"https://kinobuchung.ch/reservation.php?name=" . urlencode($movieTitles[$i]) . "&room=" . $row['room_idroom'] . "&showid=" . $row['idshow'] . "\" class=\"list-group-item list-group-item-action list-group-item-secondary\">
                     Raum <span class=\"badge badge-primary badge-pill float-right\">" . $row['room_idroom'] . "</span><br>
                     Datum & Zeit <span class=\"badge badge-primary badge-pill float-right\">" . $dateTime->format('d.m.Y H:i') . "</span><br>
                     verfügbare Plätze<span class=\"badge badge-primary badge-pill float-right\">$availableSeats</span></a>";

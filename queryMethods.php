@@ -55,7 +55,15 @@ function createSeats(mysqli $mysqli)
  */
 function connectDB()
 {
-    $mysqli = new mysqli("127.0.0.1", "root", "2851", "danie298_kinobuchung");
+    $dbdata = json_decode(file_get_contents("dbdata.json"), true);
+
+    define("APIKEY", file_get_contents("apikey.txt"));
+    define("HOST", $dbdata['host']);
+    define("USERNAME", $dbdata['username']);
+    define("PASSWORD", $dbdata['pw']);
+    define("DBNAME", $dbdata['dbname']);
+
+    $mysqli = new mysqli(HOST, USERNAME, PASSWORD, DBNAME);
     if ($mysqli->connect_error) {
         die("Es konnte keine Verbindung zur Datenbank hergestellt werden. Bitte kontaktieren Sie unseren Support unter +41786041237\n" . $mysqli->connect_error);
     }

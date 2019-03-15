@@ -29,14 +29,6 @@
         require 'Movie.php';
         require 'queryMethods.php';
 
-        $dbdata = json_decode(file_get_contents("dbdata.json"), true);
-
-        define("APIKEY", file_get_contents("apikey.txt"));
-        define("HOST", $dbdata['host']);
-        define("USERNAME", $dbdata['username']);
-        define("PASSWORD", $dbdata['pw']);
-        define("DBNAME", $dbdata['dbname']);
-
         $mysqli = connectDB();
 
         list($movies, $movieTitles) = Movie::getMovies(['Harry Potter', 'Hunger games', 'Thor', 'Spider-man', 'Transformers', 'It', 'The matrix', 'Finding nemo', 'Toy story']);

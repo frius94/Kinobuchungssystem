@@ -57,13 +57,12 @@ function connectDB()
 {
     $dbdata = json_decode(file_get_contents("dbdata.json"), true);
 
-    define("APIKEY", file_get_contents("apikey.txt"));
-    define("HOST", $dbdata['host']);
-    define("USERNAME", $dbdata['username']);
-    define("PASSWORD", $dbdata['pw']);
-    define("DBNAME", $dbdata['dbname']);
+    $host = $dbdata['host'];
+    $username = $dbdata['username'];
+    $password = $dbdata['pw'];
+    $dbname = $dbdata['dbname'];
 
-    $mysqli = new mysqli(HOST, USERNAME, PASSWORD, DBNAME);
+    $mysqli = new mysqli($host, $username, $password, $dbname);
     if ($mysqli->connect_error) {
         die("Es konnte keine Verbindung zur Datenbank hergestellt werden. Bitte kontaktieren Sie unseren Support unter +41786041237\n" . $mysqli->connect_error);
     }

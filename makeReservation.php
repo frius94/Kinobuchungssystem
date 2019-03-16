@@ -34,7 +34,7 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
     }
     $mysqli->close();
 
-//    mail($email, "Ihre Kinoreservierung", "Danke für Ihre Kinoreservierung.\n");
+    mail($email, "Ihre Kinoreservierung", "Danke für Ihre Kinoreservierung.", "From: Kinobuchung.ch <noreply@kinobuchung.ch>");
 
     echo "<script>alert('Danke für Ihre Registrierung. Sie war erfolgreich.');
                   window.location.href = 'https://kinobuchung.ch/index.php';

@@ -63,10 +63,13 @@
                 /* fetch associative array */
                 while ($row = $shows->fetch_assoc()) {
 
-                    $availableSeatsQuery = "SELECT count(seat.occupied) FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom INNER JOIN danie298_kinobuchung.show ON show.room_idroom = room.idroom WHERE danie298_kinobuchung.seat.occupied = 0 AND show.idshow = " . $row['idshow'] . ";";
+                    $availableSeatsQuery = "SELECT count(seat.occupied) FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom INNER JOIN danie298_kinobuchung.show ON show.room_idroom = room.idroom INNER JOIN reservation ON reservation.show_idshow = danie298_kinobuchung.show.idshow WHERE danie298_kinobuchung.seat.occupied = 0 AND show.idshow = " . $row['idshow'] . ";";
                     $availableSeats = $mysqli->query($availableSeatsQuery);
                     $availableSeats = $availableSeats->fetch_assoc();
                     $availableSeats = ($availableSeats['count(seat.occupied)']);
+                    if ($availableSeats == 0)
+                        $availableSeats = 60;
+
                     try {
                         $dateTime = new DateTime($row['time']);
                     } catch (Exception $e) {

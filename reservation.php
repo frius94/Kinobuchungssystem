@@ -94,7 +94,7 @@
                     echo "<tr>
         <th class='align-middle'>$c</th>";
                     for ($seatNumber = 1; $seatNumber <= 10; $seatNumber++) {
-                        $seatOccupiedQuery = "SELECT seat.occupied FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom INNER JOIN danie298_kinobuchung.show ON show.room_idroom = room.idroom WHERE danie298_kinobuchung.show.idshow = " . $_GET['showid'] . " AND danie298_kinobuchung.row.row_letter = '" . $c . "' AND seat.seatnumber = " . $seatNumber . ";";
+                        $seatOccupiedQuery = "SELECT seat.occupied FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom INNER JOIN danie298_kinobuchung.show ON show.room_idroom = room.idroom INNER JOIN reservation ON reservation.show_idshow = danie298_kinobuchung.show.idshow WHERE danie298_kinobuchung.show.idshow = " . $_GET['showid'] . " AND danie298_kinobuchung.row.row_letter = '" . $c . "' AND seat.seatnumber = " . $seatNumber . ";";
                         $occupied = $mysqli->query($seatOccupiedQuery);
                         $occupied = $occupied->fetch_array();
                         $id = $c . $seatNumber;

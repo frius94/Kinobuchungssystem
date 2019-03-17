@@ -150,3 +150,25 @@ function printMovie($movies, $movieTitles, $i)
                     <div class=\"list-group d-none\">
                         <h5 class='card-title scaleTitle'>Wählen Sie eine Vorstellung aus.</h5>";
 }
+
+/**
+ * @param mysqli $mysqli
+ */
+function printSeats(mysqli $mysqli) {
+    foreach (range('A', 'F') as $c) {
+        echo "<tr><th class='align-middle'>$c</th>";
+
+        for ($seatNumber = 1; $seatNumber <= 10; $seatNumber++) {
+            $seatOccupiedQuery = "SELECT seat.occupied FROM seat INNER JOIN danie298_kinobuchung.row ON danie298_kinobuchung.row.idrow = seat.row_idrow INNER JOIN room ON room.idroom = danie298_kinobuchung.row.room_idroom INNER JOIN danie298_kinobuchung.show ON show.room_idroom = room.idroom INNER JOIN reservation ON reservation.show_idshow = danie298_kinobuchung.show.idshow WHERE danie298_kinobuchung.show.idshow = " . $_GET['showid'] . " AND danie298_kinobuchung.row.row_letter = '" . $c . "' AND seat.seatnumber = " . $seatNumber . ";";
+            $occupied = $mysqli->query($seatOccupiedQuery)->fetch_array();
+            $id = $c . $seatNumber;
+
+            if ($occupied['occupied']) {
+                echo "<td><a href='#'><img id='$id' src='media/seatGray.png' class='img-fluid' alt='seat' onclick='fillSeat(this)'></a>" . $seatNumber . "</td>";
+            } else {
+                echo "<td><a href='#'><img id='$id' src='media/seatBlack.png' class='img-fluid' alt='seat' onclick='fillSeat(this)'></a>" . $seatNumber . "</td>";
+            }
+        }
+        echo "</tr>";
+    }
+}

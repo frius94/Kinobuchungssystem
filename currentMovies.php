@@ -59,11 +59,19 @@
 </div>
 </body>
 <script>
+    /**
+     *
+     * @param movie
+     */
     function showShows(movie) {
         $(movie).find(".card-body").addClass("d-none");
         $(movie).find(".list-group").removeClass("d-none");
     }
 
+    /**
+     *
+     * @param movie
+     */
     function showInfo(movie) {
         $(movie).find(".list-group").addClass("d-none");
         $(movie).find(".card-body").removeClass("d-none");

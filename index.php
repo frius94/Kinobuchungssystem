@@ -18,6 +18,9 @@
         <div class="navbar-nav">
             <a class="nav-item nav-link" href="currentMovies.php">Aktuell im Kino</a>
         </div>
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="myReservation.php">Meine Reservation</a>
+        </div>
     </div>
 </nav>
 

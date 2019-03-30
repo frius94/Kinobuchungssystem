@@ -18,68 +18,28 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="currentMovies.php">Aktuell im Kino</a>
+            <a class="nav-item nav-link" href="currentMovies.php">Aktuell im Kino</a>
         </div>
         <div class="navbar-nav">
-            <a class="nav-item nav-link" href="myReservation.php">Meine Reservation</a>
+            <a class="nav-item nav-link active" href="myReservation.php">Meine Reservation</a>
         </div>
     </div>
 </nav>
 
 <div class="container">
-    <div class="col">
-        <?php
-
-        require 'Movie.php';
-        require 'queryMethods.php';
-
-        $mysqli = connectDB();
-
-        list($movies, $movieTitles) = Movie::getMovies(['Harry Potter', 'Hunger games', 'Thor', 'Spider-man', 'Transformers', 'It', 'The matrix', 'Finding nemo', 'Toy story']);
-
-        for ($i = 0; $i < count($movies); $i++) {
-
-            createMovie($mysqli, $movies, $i);
-
-            if ($i % 3 == 0) {
-                echo "<div class=\"row\">
-            <div class=\"card-deck mb-5\">";
-            }
-
-            printMovie($movies, $movieTitles, $i);
-            printShow($mysqli, $movies, $movieTitles, $i);
-
-            if (($i + 1) % 3 == 0) {
-                echo "</div></div>";
-            }
-        }
-        createRooms($mysqli);
-        createRows($mysqli);
-        createSeats($mysqli);
-        $mysqli->close();
-        ?>
+    <div class="jumbotron bg-dark mt-4">
+        <h1 class="display-3 text-white">Meine Reservation</h1>
+        <p class="lead text-white">Hier können Sie mithilfe Ihrer Reservationsnummer, Informationen bezüglich Ihrer Reservation abrufen.</p>
+        <form accept-charset="UTF-8" action="" method="GET">
+            <div class="form-group">
+                <input type="number" class="form-control" id="reservationId" placeholder="Reservationsnummer">
+                <small class="form-text text-muted">Ihre Reservationsnummer befindet sich im Mail, welches wir Ihnen nach der Reservation geschickt haben.</small>
+            </div>
+            <button type="submit" class="btn btn-primary">absenden</button>
+        </form>
     </div>
 </div>
 </body>
-<script>
-    /**
-     *
-     * @param movie
-     */
-    function showShows(movie) {
-        $(movie).find(".card-body").addClass("d-none");
-        $(movie).find(".list-group").removeClass("d-none");
-    }
-
-    /**
-     *
-     * @param movie
-     */
-    function showInfo(movie) {
-        $(movie).find(".list-group").addClass("d-none");
-        $(movie).find(".card-body").removeClass("d-none");
-    }
-</script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>

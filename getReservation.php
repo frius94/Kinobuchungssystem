@@ -1,9 +1,9 @@
 <?php
 
 require 'queryMethods.php';
-if (isset($_POST['reservationId']) && filter_var($_POST['email'], FILTER_SANITIZE_NUMBER_INT)) {
+if (isset($_GET['reservationId']) && filter_var($_GET['reservationId'], FILTER_SANITIZE_NUMBER_INT)) {
 
-    $reservationId = filter_var($_POST['firstname'], FILTER_SANITIZE_NUMBER_INT);
+    $reservationId = filter_var($_GET['reservationId'], FILTER_SANITIZE_NUMBER_INT);
 
     $mysqli = connectDB();
 

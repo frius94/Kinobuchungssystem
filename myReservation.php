@@ -30,9 +30,9 @@
     <div class="jumbotron bg-dark mt-4">
         <h1 class="display-3 text-white">Meine Reservation</h1>
         <p class="lead text-white">Hier können Sie mithilfe Ihrer Reservationsnummer, Informationen bezüglich Ihrer Reservation abrufen.</p>
-        <form accept-charset="UTF-8" action="" method="GET">
+        <form accept-charset="UTF-8" action="getReservation.php" method="GET">
             <div class="form-group">
-                <input type="number" class="form-control" id="reservationId" placeholder="Reservationsnummer">
+                <input type="number" class="form-control" id="reservationId" name="reservationId" placeholder="Reservationsnummer">
                 <small class="form-text text-muted">Ihre Reservationsnummer befindet sich im Mail, welches wir Ihnen nach der Reservation geschickt haben.</small>
             </div>
             <button type="submit" class="btn btn-primary">absenden</button>

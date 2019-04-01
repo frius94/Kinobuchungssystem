@@ -7,7 +7,7 @@
  */
 
 require 'queryMethods.php';
-if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['street']) && isset($_POST['number']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) && isset($_POST['email']) && isset($_POST['mobile']) && isset($_POST['seats']) && isset($_POST['showid'])) {
+if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['street']) && isset($_POST['number']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) && isset($_POST['email']) && isset($_POST['mobile']) && isset($_POST['seats']) && isset($_POST['showid']) && isset($_POST['city']) && isset($_POST['zip'])) {
 
     $firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
     $lastname = filter_var($_POST['lastname'], FILTER_SANITIZE_STRING);
@@ -15,23 +15,23 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
     $number = filter_var($_POST['number'], FILTER_SANITIZE_STRING);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $mobile = filter_var($_POST['mobile'], FILTER_SANITIZE_STRING);
-    $movie = filter_var($_POST['movie'], FILTER_SANITIZE_STRING);
-    $room = filter_var($_POST['room'], FILTER_SANITIZE_STRING);
+//    $movie = filter_var($_POST['movie'], FILTER_SANITIZE_STRING);
+//    $room = filter_var($_POST['room'], FILTER_SANITIZE_STRING);
     $seats = filter_var($_POST['seats'], FILTER_SANITIZE_STRING);
     $showId = filter_var($_POST['showid'], FILTER_SANITIZE_STRING);
+    $city = filter_var($_POST['city'], FILTER_SANITIZE_STRING);
+    $zip = filter_var($_POST['zip'], FILTER_SANITIZE_STRING);
+
 
     $seatsArray = explode(",", $seats);
 
     $mysqli = connectDB();
-
-    if (insertPerson($mysqli, $firstname, $lastname, $street, $number, $email, $mobile)) {
-        $personID = getPersonID($mysqli, $firstname, $lastname, $mobile);
-        if (insertReservation($mysqli, $showId, $personID)) {
-            foreach ($seatsArray as $item) {
-                updateSeatOccupation($mysqli, $item, $showId);
-            }
-        }
-    }
+    $idCity = insertCity($mysqli, $city, $zip);
+    insertPerson($mysqli, $firstname, $lastname, $street, $number, $email, $mobile, $idCity);
+    $personId = getPersonID($mysqli, $firstname, $lastname, $mobile);
+    insertReservation($mysqli, $showId, $personId);
+    $reservationId = getReservationID($mysqli, $showId, $personId);
+    insertReservedSeats($mysqli, $seatsArray, $reservationId);
     $mysqli->close();
 
     mail($email, "Ihre Kinoreservierung", "Danke für Ihre Kinoreservierung.", "From: Kinobuchung.ch <noreply@kinobuchung.ch>");
@@ -55,10 +55,18 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
  * @param $mobile
  * @return bool|mysqli_result
  */
-function insertPerson(mysqli $mysqli, $firstname, $lastname, $street, $number, $email, $mobile)
+function insertPerson(mysqli $mysqli, $firstname, $lastname, $street, $number, $email, $mobile, $idCity)
 {
-    $insertPerson = "INSERT IGNORE INTO `person`(firstname, lastname, street, number, email, mobile) VALUES ('$firstname', '$lastname', '$street', '$number', '$email', '$mobile');";
+    $insertPerson = "INSERT IGNORE INTO `person`(firstname, lastname, street, number, email, mobile, city_idcity) VALUES ('$firstname', '$lastname', '$street', '$number', '$email', '$mobile', $idCity);";
     return $mysqli->query($insertPerson);
+}
+
+function insertCity(mysqli $mysqli, $name, $zip)
+{
+    $insertCity = "insert ignore into `city`(name, zip) values ('$name', '$zip');";
+    $mysqli->query($insertCity);
+    $getId = "select idcity from city where name = '$name' and zip = '$zip';";
+    return $mysqli->query($getId)->fetch_assoc()['idcity'];
 }
 
 /**
@@ -71,8 +79,8 @@ function insertPerson(mysqli $mysqli, $firstname, $lastname, $street, $number, $
 function getPersonID(mysqli $mysqli, $firstname, $lastname, $mobile)
 {
     $personQuery = "SELECT idperson FROM person WHERE firstname = '$firstname' AND lastname = '$lastname' AND mobile = '$mobile';";
-    $personId = $mysqli->query($personQuery);
-    return $personId->fetch_array()[0];
+    $personId = $mysqli->query($personQuery)->fetch_assoc()['idperson'];
+    return $personId;
 }
 
 /**
@@ -89,14 +97,26 @@ function insertReservation(mysqli $mysqli, $showId, $personId)
 
 /**
  * @param mysqli $mysqli
- * @param $seatsArray
  * @param $showId
- * @return bool|mysqli_result
+ * @param $personId
+ * @return mixed
  */
-function updateSeatOccupation(mysqli $mysqli, $seatsArray, $showId)
+function getReservationID(mysqli $mysqli, $showId, $personId)
 {
-    $row = substr($seatsArray, 0, 1);
-    $seat = substr($seatsArray, 1, 1);
-    $insertSeatOccupationQuery = "UPDATE seat INNER JOIN danie298_kinobuchung.row AS r ON r.idrow = seat.row_idrow INNER JOIN room ON room.idroom = r.room_idroom INNER JOIN danie298_kinobuchung.show AS s ON s.room_idroom = room.idroom SET occupied = 1 WHERE s.idshow = $showId && r.row_letter = '$row' && seat.seatnumber = $seat;";
-    return $mysqli->query($insertSeatOccupationQuery);
+//    $reservationQuery = "select idreservation from reservation where show_idshow = $showId and person_idperson = $personId";
+    $reservationQuery = "SELECT LAST_INSERT_ID();";
+    return $mysqli->query($reservationQuery)->fetch_assoc()['LAST_INSERT_ID()'];
+}
+
+/**
+ * @param mysqli $mysqli
+ * @param $seatIds
+ * @param $reservationId
+ */
+function insertReservedSeats(mysqli $mysqli, $seatIds, $reservationId)
+{
+    foreach ($seatIds as $seatId) {
+        $reservedSeatQuery = "insert into reserved_seats values ($reservationId, $seatId);";
+        $mysqli->query($reservedSeatQuery);
+    }
 }

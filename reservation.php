@@ -48,6 +48,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="col-9">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="city" name="city" placeholder="Stadt"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="zip" name="zip" placeholder="PLZ"
+                                   required>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <input type="email" class="form-control" id="email" name="email" placeholder="E-Mail" required>
                 </div>
@@ -106,6 +120,7 @@
         crossorigin="anonymous"></script>
 <script type="application/javascript">
     var selectedSeats = [];
+    var selectedSeatIds = [];
 
     /**
      *
@@ -115,13 +130,15 @@
         if ($(seat).attr('src') === "media/seatBlack.png") {
             $(seat).attr('src', "media/seatRed.png");
             selectedSeats.push($(seat).attr('id'));
+            selectedSeatIds.push($(seat).attr('alt'));
             $('#seats').attr('value', selectedSeats.toString());
-            $('#hiddenSeats').attr('value', selectedSeats.toString());
+            $('#hiddenSeats').attr('value', selectedSeatIds.toString());
         } else if ($(seat).attr('src') === "media/seatRed.png") {
             $(seat).attr('src', "media/seatBlack.png");
             selectedSeats.splice(selectedSeats.indexOf($(seat).attr('id')), 1);
+            selectedSeatIds.splice(selectedSeatIds.indexOf($(seat).attr('alt')), 1);
             $('#seats').attr('value', selectedSeats.toString());
-            $('#hiddenSeats').attr('value', selectedSeats.toString());
+            $('#hiddenSeats').attr('value', selectedSeatIds.toString());
         }
     }
 </script>

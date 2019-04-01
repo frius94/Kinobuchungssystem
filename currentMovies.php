@@ -54,7 +54,6 @@
             }
         }
         createRooms($mysqli);
-        createRows($mysqli);
         createSeats($mysqli);
         $mysqli->close();
         ?>

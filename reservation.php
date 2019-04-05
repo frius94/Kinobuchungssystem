@@ -70,18 +70,24 @@
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control" id="movie" name="movie" placeholder="Film"
-                           value="<?= $_GET['name'] ?>"
+                           value="<?php
+                           echo htmlspecialchars($_GET['name']);
+                           ?>"
                            required disabled>
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control" id="room" name="room" placeholder="Raum"
-                           value="Raum: <?= $_GET['room'] ?>" required disabled>
+                           value="Raum: <?php
+                           echo htmlspecialchars($_GET['room']);
+                           ?>" required disabled>
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control" id="seats" placeholder="ausgewählte Sitze" required
                            disabled>
                 </div>
-                <input type="hidden" name="showid" value="<?= $_GET['showid'] ?>">
+                <input type="hidden" name="showid" value="<?php
+                echo htmlspecialchars($_GET['showid']);
+                ?>">
                 <input type="hidden" name="seats" id="hiddenSeats" value="">
                 <button type="submit" class="btn btn-primary" name="submit" value="submit">Sitze reservieren</button>
             </form>

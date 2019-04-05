@@ -138,9 +138,10 @@ function printMovie($movies, $movieTitles, $i)
  */
 function printSeats(mysqli $mysqli)
 {
-    $reservedIdSeatsQuery = "select idseat from seat inner join reserved_seats on idseat = seat_idseat inner join reservation on reservation_idreservation = idreservation where show_idshow = " . $_GET['showid'] . ";";
+    $showId = $mysqli->real_escape_string($_GET['showid']);
+    $reservedIdSeatsQuery = "select idseat from seat inner join reserved_seats on idseat = seat_idseat inner join reservation on reservation_idreservation = idreservation where show_idshow = " . $showId . ";";
     $reservedSeats = $mysqli->query($reservedIdSeatsQuery)->fetch_all();
-    $seatIds = getSeatIds($mysqli, $_GET['showid']);
+    $seatIds = getSeatIds($mysqli, $showId);
     $seatCounter = 0;
 
     foreach (range('A', 'F') as $c) {

@@ -103,7 +103,7 @@
                 </thead>
                 <tbody>
                 <?php
-                require 'queryMethods.php';
+                require 'dbQueries.php';
 
                 $mysqli = connectDB();
                 printSeats($mysqli);

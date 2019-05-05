@@ -1,6 +1,6 @@
 <?php
 
-require 'queryMethods.php';
+require 'dbQueries.php';
 if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['street']) && isset($_POST['number']) && isset($_POST['email']) && isset($_POST['mobile']) && isset($_POST['seats']) && isset($_POST['showid']) && isset($_POST['city']) && isset($_POST['zip'])) {
 
     $firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);

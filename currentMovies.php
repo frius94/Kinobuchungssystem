@@ -31,7 +31,7 @@
         <?php
 
         require 'Movie.php';
-        require 'queryMethods.php';
+        require 'dbQueries.php';
 
         $mysqli = connectDB();
 

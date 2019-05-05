@@ -1,6 +1,6 @@
 <?php
 
-require 'queryMethods.php';
+require 'dbQueries.php';
 if (isset($_GET['reservationId']) && filter_var($_GET['reservationId'], FILTER_SANITIZE_NUMBER_INT)) {
 
     $reservationId = filter_var($_GET['reservationId'], FILTER_SANITIZE_NUMBER_INT);

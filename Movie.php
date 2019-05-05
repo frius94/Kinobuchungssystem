@@ -247,6 +247,8 @@ class Movie
     }
 
     /**
+     * Get the apiKey from the txt file
+     * Use the omdb API to get every movie information from the movieTitles array
      * @param $movieTitles
      * @return array
      */

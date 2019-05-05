@@ -62,7 +62,7 @@
 </body>
 <script>
     /**
-     *
+     * Show every available show for the according movie
      * @param movie
      */
     function showShows(movie) {
@@ -71,7 +71,7 @@
     }
 
     /**
-     *
+     * Show information about the according movie
      * @param movie
      */
     function showInfo(movie) {

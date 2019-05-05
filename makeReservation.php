@@ -1,13 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Umut
- * Date: 11.03.2019
- * Time: 01:13
- */
 
 require 'queryMethods.php';
-if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['street']) && isset($_POST['number']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) && isset($_POST['email']) && isset($_POST['mobile']) && isset($_POST['seats']) && isset($_POST['showid']) && isset($_POST['city']) && isset($_POST['zip'])) {
+if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['street']) && isset($_POST['number']) && isset($_POST['email']) && isset($_POST['mobile']) && isset($_POST['seats']) && isset($_POST['showid']) && isset($_POST['city']) && isset($_POST['zip'])) {
 
     $firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
     $lastname = filter_var($_POST['lastname'], FILTER_SANITIZE_STRING);
@@ -15,8 +9,6 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
     $number = filter_var($_POST['number'], FILTER_SANITIZE_STRING);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $mobile = filter_var($_POST['mobile'], FILTER_SANITIZE_STRING);
-//    $movie = filter_var($_POST['movie'], FILTER_SANITIZE_STRING);
-//    $room = filter_var($_POST['room'], FILTER_SANITIZE_STRING);
     $seats = filter_var($_POST['seats'], FILTER_SANITIZE_STRING);
     $showId = filter_var($_POST['showid'], FILTER_SANITIZE_STRING);
     $city = filter_var($_POST['city'], FILTER_SANITIZE_STRING);
@@ -30,11 +22,11 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
     insertPerson($mysqli, $firstname, $lastname, $street, $number, $email, $mobile, $idCity);
     $personId = getPersonID($mysqli, $firstname, $lastname, $mobile);
     insertReservation($mysqli, $showId, $personId);
-    $reservationId = getReservationID($mysqli, $showId, $personId);
+    $reservationId = getReservationID($mysqli);
     insertReservedSeats($mysqli, $seatsArray, $reservationId);
     $mysqli->close();
 
-    mail($email, "Ihre Kinoreservierung", "Danke für Ihre Kinoreservierung. Ihre Reservierungsnummer lautet $reservationId.", "From: Kinobuchung.ch <noreply@kinobuchung.ch>");
+    mail($email, "Ihre Kinoreservierung", "Danke für Ihre Kinoreservierung. Ihre Reservierungsnummer lautet $reservationId.\nUnter https://kinobuchung.ch/getReservation.php können Sie Informationen zu Ihrer Reservierung abrufen.\nFreundliche Grüsse\nIhr Kinobuchung.ch Team", "From: Kinobuchung.ch <noreply@kinobuchung.ch>");
 
     echo "<script>alert('Danke für Ihre Registrierung. Sie war erfolgreich.');
                   window.location.href = 'https://kinobuchung.ch/index.php';
@@ -46,6 +38,7 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
 }
 
 /**
+ * Insert person to database with data from the inputFields
  * @param mysqli $mysqli
  * @param $firstname
  * @param $lastname
@@ -61,6 +54,13 @@ function insertPerson(mysqli $mysqli, $firstname, $lastname, $street, $number, $
     return $mysqli->query($insertPerson);
 }
 
+/**
+ * Insert city to database with data from the inputFields
+ * @param mysqli $mysqli
+ * @param $name
+ * @param $zip
+ * @return mixed
+ */
 function insertCity(mysqli $mysqli, $name, $zip)
 {
     $insertCity = "insert ignore into `city`(name, zip) values ('$name', '$zip');";
@@ -70,13 +70,14 @@ function insertCity(mysqli $mysqli, $name, $zip)
 }
 
 /**
+ * Get the person ID from database. Search for the person with the same lastname and mobile number.
  * @param mysqli $mysqli
  * @param $firstname
  * @param $lastname
  * @param $mobile
- * @return mixed
+ * @return int
  */
-function getPersonID(mysqli $mysqli, $firstname, $lastname, $mobile)
+function getPersonID(mysqli $mysqli, $firstname, $lastname, $mobile): int
 {
     $personQuery = "SELECT idperson FROM person WHERE firstname = '$firstname' AND lastname = '$lastname' AND mobile = '$mobile';";
     $personId = $mysqli->query($personQuery)->fetch_assoc()['idperson'];
@@ -84,6 +85,7 @@ function getPersonID(mysqli $mysqli, $firstname, $lastname, $mobile)
 }
 
 /**
+ * Insert a new reservation to database
  * @param mysqli $mysqli
  * @param $showId
  * @param $personId
@@ -96,19 +98,18 @@ function insertReservation(mysqli $mysqli, $showId, $personId)
 }
 
 /**
+ * Get the reservation ID from database with call of the mysql last_insert function which returns the id from the last insert
  * @param mysqli $mysqli
- * @param $showId
- * @param $personId
  * @return mixed
  */
-function getReservationID(mysqli $mysqli, $showId, $personId)
+function getReservationID(mysqli $mysqli)
 {
-//    $reservationQuery = "select idreservation from reservation where show_idshow = $showId and person_idperson = $personId";
     $reservationQuery = "SELECT LAST_INSERT_ID();";
     return $mysqli->query($reservationQuery)->fetch_assoc()['LAST_INSERT_ID()'];
 }
 
 /**
+ * Insert the reserved seats to the database with the reservation ID and the seat IDs in an array
  * @param mysqli $mysqli
  * @param $seatIds
  * @param $reservationId

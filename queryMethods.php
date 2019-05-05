@@ -1,12 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Umut
- * Date: 08.03.2019
- * Time: 11:14
- */
 
 /**
+ * Create the rooms in the database if they do not exist
  * @param mysqli $mysqli
  */
 function createRooms(mysqli $mysqli)
@@ -18,6 +13,7 @@ function createRooms(mysqli $mysqli)
 }
 
 /**
+ * Create the seats in the database if they do not exist
  * @param mysqli $mysqli
  */
 function createSeats(mysqli $mysqli)
@@ -35,6 +31,7 @@ function createSeats(mysqli $mysqli)
 }
 
 /**
+ * Connect to the database with the credentials from json file
  * @return mysqli
  */
 function connectDB()
@@ -54,6 +51,7 @@ function connectDB()
 }
 
 /**
+ * Create the movies in the database if they do not exist
  * @param $mysqli
  * @param $movies
  * @param $i
@@ -66,6 +64,7 @@ function createMovie(mysqli $mysqli, $movies, $i)
 }
 
 /**
+ * Get the available seats for the according show
  * @param $mysqli
  * @param $row
  * @return int
@@ -78,6 +77,7 @@ function getAvailableSeats(mysqli $mysqli, $row)
 }
 
 /**
+ * Get the show information from the database and print it
  * @param mysqli $mysqli
  * @param $movies
  * @param $movieTitles
@@ -112,6 +112,7 @@ function printShow(mysqli $mysqli, $movies, $movieTitles, $i)
 }
 
 /**
+ * Get the movie information from the database and print it
  * @param $movies
  * @param $movieTitles
  * @param $i
@@ -134,6 +135,8 @@ function printMovie($movies, $movieTitles, $i)
 }
 
 /**
+ * Get the seat availability information from the database with the show ID
+ * Print a black seat if it is not occupied, otherwise print a gray seat
  * @param mysqli $mysqli
  */
 function printSeats(mysqli $mysqli)
@@ -169,6 +172,12 @@ function printSeats(mysqli $mysqli)
     }
 }
 
+/**
+ * Return the seat IDs of the according show
+ * @param mysqli $mysqli
+ * @param $showId
+ * @return mixed
+ */
 function getSeatIds(mysqli $mysqli, $showId)
 {
     $query = "select idseat from seat inner join room on seat.room_idroom = idroom inner join danie298_kinobuchung.show as s on s.room_idroom = idroom where idshow = $showId;";

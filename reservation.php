@@ -129,7 +129,8 @@
     var selectedSeatIds = [];
 
     /**
-     *
+     * If the clicked seat is black, turn it to red (selected)
+     * If the clicked seat is red, turn it to black (not selected)
      * @param seat
      */
     function fillSeat(seat) {

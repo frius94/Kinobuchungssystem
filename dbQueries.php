@@ -120,7 +120,7 @@ function printShow(mysqli $mysqli, $movies, $movieTitles, $i)
 function printMovie($movies, $movieTitles, $i)
 {
     echo "<div class=\"card text-white\" id='$movieTitles[$i]' onclick='showShows(this)' onmouseleave='showInfo(this)'>
-                    <img src=\"media/" . $movieTitles[$i] . ".jpg" . "\" class=\"card-img-top\" alt=\"movie picture\">
+                    <img src=\"media/" . $movieTitles[$i] . ".jpg\" class=\"card-img-top\" alt=\"movie picture\">
                     <div class='card-img-overlay ovl'>
                     <div class=\"card-body\">
                         <h5 class=\"card-title scaleTitle\">" . $movies[$i]->getTitle() . "</h5>

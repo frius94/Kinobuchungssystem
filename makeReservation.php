@@ -33,7 +33,7 @@ if (isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['str
           </script>";
 } else {
     echo "<script>alert('Leider ist bei der Registrierung ein Fehler aufgetreten.');
-                  window.location.href = 'http://kinobuchung.ch/index.php';
+                  window.location.href = 'https://kinobuchung.ch/index.php';
           </script>";
 }
 
@@ -63,9 +63,9 @@ function insertPerson(mysqli $mysqli, $firstname, $lastname, $street, $number, $
  */
 function insertCity(mysqli $mysqli, $name, $zip)
 {
-    $insertCity = "insert ignore into `city`(name, zip) values ('$name', '$zip');";
+    $insertCity = "INSERT ignore INTO `city`(name, zip) VALUES ('$name', '$zip');";
     $mysqli->query($insertCity);
-    $getId = "select idcity from city where name = '$name' and zip = '$zip';";
+    $getId = "SELECT idcity FROM city WHERE name = '$name' and zip = '$zip';";
     return $mysqli->query($getId)->fetch_assoc()['idcity'];
 }
 
@@ -113,11 +113,13 @@ function getReservationID(mysqli $mysqli)
  * @param mysqli $mysqli
  * @param $seatIds
  * @param $reservationId
+ * @return bool|mysqli_result
  */
 function insertReservedSeats(mysqli $mysqli, $seatIds, $reservationId)
 {
     foreach ($seatIds as $seatId) {
-        $reservedSeatQuery = "insert into reserved_seats values ($reservationId, $seatId);";
-        $mysqli->query($reservedSeatQuery);
+        $reservedSeatQuery = "INSERT INTO reserved_seats VALUES ($reservationId, $seatId);";
+        $result = $mysqli->query($reservedSeatQuery);
     }
+    return $result;
 }

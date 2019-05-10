@@ -3,31 +3,40 @@
 /**
  * Create the rooms in the database if they do not exist
  * @param mysqli $mysqli
+ * @return bool
  */
 function createRooms(mysqli $mysqli)
 {
     for ($i = 1; $i <= 4; $i++) {
         $sql = "INSERT IGNORE INTO room (idroom) VALUES ($i);";
-        $mysqli->query($sql);
+        $result = $mysqli->query($sql);
     }
+    if (isset($result))
+        return true;
+    return false;
 }
 
 /**
  * Create the seats in the database if they do not exist
  * @param mysqli $mysqli
+ * @return bool
  */
 function createSeats(mysqli $mysqli)
 {
+    $success = true;
     $primaryKey = 1;
     for ($roomId = 1; $roomId <= 4; $roomId++) {
         for ($row = 'A'; $row <= 'F'; $row++) {
             for ($seatNumber = 1; $seatNumber <= 10; $seatNumber++) {
                 $query = "INSERT IGNORE INTO seat (idseat, seatnumber, row_letter, room_idroom) VALUES ($primaryKey, $seatNumber , '$row', $roomId);";
-                $mysqli->query($query);
+                $result = $mysqli->query($query);
+                if (!$result)
+                    $success = false;
                 $primaryKey++;
             }
         }
     }
+    return $success;
 }
 
 /**
@@ -36,7 +45,7 @@ function createSeats(mysqli $mysqli)
  */
 function connectDB()
 {
-    $dbdata = json_decode(file_get_contents("dbdata.json"), true);
+    $dbdata = json_decode(file_get_contents(__DIR__ . "/dbdata.json"), true);
 
     $host = $dbdata['host'];
     $username = $dbdata['username'];
@@ -55,12 +64,17 @@ function connectDB()
  * @param $mysqli
  * @param $movies
  * @param $i
+ * @return bool
  */
 function createMovie(mysqli $mysqli, $movies, $i)
 {
     $dateTime = DateTime::createFromFormat("d M Y", $movies[$i]->getReleased());
     $sql = "INSERT IGNORE INTO `movie` (title, year, released, runtime, genre, plot, language) VALUES ('" . $movies[$i]->getTitle() . "', " . $movies[$i]->getYear() . ", '" . $dateTime->format('Y-m-d') . "', '" . $movies[$i]->getRuntime() . "', '" . $movies[$i]->getGenre() . "', '" . addslashes($movies[$i]->getPlot()) . "', '" . $movies[$i]->getLanguage() . "')";
-    $mysqli->query($sql);
+    $result = $mysqli->query($sql);
+
+    if ($result)
+        return true;
+    return false;
 }
 
 /**
@@ -71,7 +85,7 @@ function createMovie(mysqli $mysqli, $movies, $i)
  */
 function getAvailableSeats(mysqli $mysqli, $row)
 {
-    $availableSeatsQuery = "select count(*) from reserved_seats inner join reservation on reservation_idreservation = idreservation inner join danie298_kinobuchung.show on show_idshow = idshow where idshow = " . $row['idshow'] . ";";
+    $availableSeatsQuery = "SELECT count(*) FROM reserved_seats INNER JOIN reservation ON reservation_idreservation = idreservation INNER JOIN danie298_kinobuchung.show ON show_idshow = idshow WHERE idshow = " . $row['idshow'] . ";";
     $availableSeats = $mysqli->query($availableSeatsQuery)->fetch_assoc()['count(*)'];
     return 60 - $availableSeats;
 }
@@ -144,7 +158,7 @@ function printSeats(mysqli $mysqli)
     $showId = $mysqli->real_escape_string($_GET['showid']);
     $showId = htmlspecialchars($showId);
     $showId = strip_tags($showId);
-    $reservedIdSeatsQuery = "select idseat from seat inner join reserved_seats on idseat = seat_idseat inner join reservation on reservation_idreservation = idreservation where show_idshow = " . $showId . ";";
+    $reservedIdSeatsQuery = "SELECT idseat FROM seat INNER JOIN reserved_seats ON idseat = seat_idseat INNER JOIN reservation ON reservation_idreservation = idreservation WHERE show_idshow = " . $showId . ";";
     $reservedSeats = $mysqli->query($reservedIdSeatsQuery)->fetch_all();
     $seatIds = getSeatIds($mysqli, $showId);
     $seatCounter = 0;
@@ -180,6 +194,6 @@ function printSeats(mysqli $mysqli)
  */
 function getSeatIds(mysqli $mysqli, $showId)
 {
-    $query = "select idseat from seat inner join room on seat.room_idroom = idroom inner join danie298_kinobuchung.show as s on s.room_idroom = idroom where idshow = $showId;";
+    $query = "SELECT idseat FROM seat INNER JOIN room ON seat.room_idroom = idroom INNER JOIN danie298_kinobuchung.show AS s ON s.room_idroom = idroom WHERE idshow = $showId;";
     return $mysqli->query($query)->fetch_all();
 }

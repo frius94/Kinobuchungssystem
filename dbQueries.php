@@ -100,7 +100,9 @@ function getAvailableSeats(mysqli $mysqli, $row)
 function printShow(mysqli $mysqli, $movies, $movieTitles, $i)
 {
     $showQuery = "SELECT * FROM danie298_kinobuchung.show INNER JOIN danie298_kinobuchung.movie ON danie298_kinobuchung.show.movie_idmovie = movie.idmovie WHERE movie.title = '" . $movies[$i]->getTitle() . "' ORDER BY room_idroom;";
-    if ($shows = $mysqli->query($showQuery)) {
+    if ($mysqli->query($showQuery)) {
+
+        $shows = $mysqli->query($showQuery);
 
         /* fetch associative array */
         while ($row = $shows->fetch_assoc()) {

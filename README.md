@@ -5,4 +5,3 @@
 
 M326\
 Cinema booking website for the module 326.\
-You can find the live website to try it out on: https://kinobuchung.ch\

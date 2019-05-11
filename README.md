@@ -4,4 +4,4 @@
 
 
 M326\
-Cinema booking website for the module 326.\
+Cinema booking website for the module 326.
